@@ -119,9 +119,9 @@
                 <div class="form-group">
                     <label for="editName">Profile Photo </label>&nbsp;&nbsp;&nbsp;
                     <img [src]="url" height="100"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input type="file" (change)="onselectFile($event)" /><br><br>
-                    <input type="text" [(ngModel)]="inputObj.imgurl" name="imgurl" class="form-control" id="imgurl" placeholder="Please paste the image URL uploaded to Cloud here.">
-                
+                    <input type="file" [(ngModel)]="inputObj.profilePic" id="profilePic" name="profilePic" (change)="onselectFile($event)" /><br>
+                    <!-- <input type="text" [(ngModel)]="inputObj.imgurl" name="imgurl" class="form-control" id="imgurl" placeholder="Please paste the image URL uploaded to Cloud here.">
+                 -->
                 </div>
                 <div class="form-group">
                     <label for="editName">Name:</label>

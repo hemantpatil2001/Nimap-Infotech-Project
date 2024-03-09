@@ -24,13 +24,13 @@ export class UserShowComponent {
   listarray:any[]=[];
 
   inputObj={
-    "imgurl":"",
-    "name":"",
-    "email":"",
+    profilePic:"",
+    name:"",
+    email:"",
     age:50,
-    "contact": "",
-    "address" : "",
-    "interest" : ""
+    contact: "",
+    address : "",
+    interest : ""
     
   };
 
@@ -42,15 +42,35 @@ export class UserShowComponent {
   url="./assets/images/pic.jpg"
   onselectFile(e:any)
   {
-    if(e.target.files)
-    {
-      var reader = new FileReader();
-      reader.readAsDataURL(e.target.files[0]);
-      reader.onload=(event:any)=>{
-        this.url=event.target.result;
-      }
-    }
+    const file = e.target.files[0];
+  
+  if (file) {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    // Set up event listener for when file reading is done
+    fileReader.onload = (event:any) => {
+      // Once reading is complete, convert the image to base64
+      const base64Image = fileReader.result as string;
+
+      // Update the profilePic property in inputObj with the base64 encoded image
+      this.inputObj.profilePic = base64Image;
+      this.url=event.target.result;
+
+      // Now, you can subscribe to the addItem service
+     // this.subscribeToAddItem();
+    };
+
+    // Start reading the file as a data URL
+    fileReader.readAsDataURL(file);
+  } else {
+    // Handle the case where no file is selected
+    console.error('No file selected.');
   }
+    
+    
+  }
+
+
   onSliderChange(event: Event): void {
     // Update the slider value when it changes
     this.inputObj.age = (event.target as HTMLInputElement).valueAsNumber;
