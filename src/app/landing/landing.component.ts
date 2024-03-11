@@ -1,18 +1,30 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule } from '@angular/forms';
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DataService } from '../service/data.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FootComponent } from "../foot/foot.component";
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { ShowDataComponent } from '../show-data/show-data.component';
+import { Observable, map, startWith } from 'rxjs';
+import {MatAutocompleteSelectedEvent, MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatChipInputEvent, MatChipsModule} from '@angular/material/chips';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
+import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import {LiveAnnouncer} from '@angular/cdk/a11y';
 
 @Component({
     selector: 'app-landing',
     standalone: true,
     templateUrl: './landing.component.html',
     styleUrl: './landing.component.css',
-    imports: [RouterOutlet, FormsModule, HttpClientModule, FootComponent,RouterLink,CommonModule,ShowDataComponent]
+    imports: [RouterOutlet, FormsModule, HttpClientModule, FootComponent,RouterLink,CommonModule,ShowDataComponent,MatFormFieldModule,
+      MatChipsModule,
+      MatIconModule,
+      MatAutocompleteModule,
+      ReactiveFormsModule,
+      AsyncPipe]
 })
 export class LandingComponent {
   // userName ='';
@@ -25,19 +37,82 @@ export class LandingComponent {
   adminEmail='';
   password='';
 
+  fnamePattern:string="^[a-zA-Z]{1,20}$";
+  states: string[] = [
+    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
+    'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
+    'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana',
+    'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Andaman and Nicobar Islands', 'Chandigarh',
+    'Dadra and Nagar Haveli and Daman and Diu', 'Lakshadweep', 'Delhi', 'Puducherry'
+  ];
+  separatorKeysCodes: number[] = [ENTER, COMMA];
+  interestCtrl = new FormControl('');
+  filteredinterest: Observable<string[]>;
+  allinterest: string[] = ['Drawing', 'Reading', 'Dancing', 'Painting', 'Writting'];
+  interests:string[]=[];
+
+  @ViewChild('interestInput') interestInput!: ElementRef<HTMLInputElement>;
+
+  announcer = inject(LiveAnnouncer);
 
   inputObj={
     profilePic:"",
-    name:"",
+    fname:"",
+    lname:"",
     email:"",
     age:20,
     contact: "",
-    address : "",
-    interest : ""
+    state:"",
+    addressType:"",
+    address : {
+      address1: '',
+      address2: '',
+      companyAddress1: '',
+      companyAddress2: ''
+    },
+    interest : this.interests
     
   };
   constructor(private dataService: DataService,private router: Router) {
-    
+    this.filteredinterest = this.interestCtrl.valueChanges.pipe(
+      startWith(null),
+      map((fruit: string | null) => (fruit ? this._filter(fruit) : this.allinterest.slice())),
+    );
+  }
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    // Add our fruit
+    if (value) {
+      this.inputObj.interest.push(value);
+    }
+
+    // Clear the input value
+    event.chipInput!.clear();
+
+    this.interestCtrl.setValue(null);
+  }
+
+  remove(interest: string): void {
+    const index = this.inputObj.interest.indexOf(interest);
+
+    if (index >= 0) {
+      this.inputObj.interest.splice(index, 1);
+
+      this.announcer.announce(`Removed ${interest}`);
+    }
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.inputObj.interest.push(event.option.viewValue);
+    this.interestInput.nativeElement.value = '';
+    this.interestCtrl.setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.inputObj.interest.filter((interest: string)=> interest.toLowerCase().includes(filterValue));
   }
   
   

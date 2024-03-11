@@ -21,6 +21,7 @@
 <table class="table">
     <thead>
       <tr>
+        <th scope="col">Profile Pic</th>
         <th scope="col">Name</th>
         <th scope="col">Email</th>
         <th scope="col">Age</th>
@@ -31,6 +32,7 @@
     </thead>
     <tbody>
       <tr *ngFor="let db of data">
+        <td><img src="{{db.profilePic}}" height="100" width="100" class="img-fluid" alt=""></td>
         <td>{{db.name}}</td>
         <td>{{db.email}}</td>
         <td>{{db.age}}</td>

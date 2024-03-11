@@ -48,6 +48,6 @@ export class DataService {
   
   updateDataByEmail(email: string, updatedData: any): Observable<any> {
     const url = `${this.apiUrl}/${email}`; // Replace 'yourResource' with your actual resource name
-    return this.http.put(`${url}?email=${email}`, updatedData);
+    return this.http.post(`${url}?email=${email}`, updatedData);
   }
 }
