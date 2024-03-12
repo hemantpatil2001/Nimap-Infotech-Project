@@ -1,5 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { DataService } from '../service/data.service';
 import { HttpClientModule } from '@angular/common/http';
@@ -38,6 +38,8 @@ export class LandingComponent {
   password='';
 
   fnamePattern:string="^[a-zA-Z]{1,20}$";
+  emailPattern:string="^([awa-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$";
+  phonePattern: string = "^((\\+91-?)|0)?[0-9]{10}$";
   states: string[] = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
     'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
@@ -144,37 +146,47 @@ export class LandingComponent {
 
   
     
-  url="./assets/images/pic.jpg"
-  onselectFile(e:any)
-  {
-    const file = e.target.files[0];
   
-  if (file) {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    // Set up event listener for when file reading is done
-    fileReader.onload = (event:any) => {
-      // Once reading is complete, convert the image to base64
-      const base64Image = fileReader.result as string;
+  url="./assets/images/pic.jpg"
+  onselectFile(e:any ,profilePic: NgModel)
+  {
 
-      // Update the profilePic property in inputObj with the base64 encoded image
-      this.inputObj.profilePic = base64Image;
-      this.url=event.target.result;
-
-      // Now, you can subscribe to the addItem service
-     // this.subscribeToAddItem();
-    };
-
-    // Start reading the file as a data URL
-    fileReader.readAsDataURL(file);
-  } else {
-    // Handle the case where no file is selected
-    console.error('No file selected.');
-  }
-    
-    
-  }
-
+    debugger;
+    const file = e.target.files[0];
+    const img = new Image();
+      img.onload = () => {
+          if (img.width !== 310 || img.height !== 325) {
+              // Set invalid size error
+              profilePic.control.setErrors({ 'invalidSize': true });
+              // Clear the file input field
+              e.target.value = '';
+              // Clear the preview image
+              //this.url="#";
+          } else {
+            
+            if (file) {
+              profilePic.control.setErrors(null);
+              const fileReader = new FileReader();
+              fileReader.readAsDataURL(file);
+              // Set up event listener for when file reading is done
+              fileReader.onload = (event:any) => {
+                // Once reading is complete, convert the image to base64
+                const base64Image = fileReader.result as string;
+      
+                // Update the profilePic property in inputObj with the base64 encoded image
+                this.inputObj.profilePic = base64Image;
+                this.url=event.target.result;
+              };
+      
+              
+            } else {
+              // Handle the case where no file is selected
+              console.error('No file selected.');
+            }
+          }
+        };
+        img.src = window.URL.createObjectURL(file);
+      }
 
   
   

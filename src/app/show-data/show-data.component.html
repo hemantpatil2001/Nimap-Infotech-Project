@@ -26,18 +26,18 @@
         <th scope="col">Email</th>
         <th scope="col">Age</th>
         <th scope="col">Contact</th>
-        <th scope="col">Address</th>
+        <th scope="col">State</th>
         <th scope="col">Interest</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let db of data">
         <td><img src="{{db.profilePic}}" height="100" width="100" class="img-fluid" alt=""></td>
-        <td>{{db.name}}</td>
+        <td>{{db.fname}}&nbsp;{{db.fname}}</td>
         <td>{{db.email}}</td>
         <td>{{db.age}}</td>
         <td>{{db.contact}}</td>
-        <td>{{db.address}}</td>
+        <td>{{db.state}}</td>
         <td>{{db.interest}}</td>
       </tr>
       

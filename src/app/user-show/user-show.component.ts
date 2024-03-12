@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { DataService } from '../service/data.service';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, NgModel, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Observable, map, startWith } from 'rxjs';
 import {MatAutocompleteSelectedEvent, MatAutocompleteModule} from '@angular/material/autocomplete';
@@ -10,6 +10,7 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatIconModule} from '@angular/material/icon';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
+import { response } from 'express';
 
 @Component({
   selector: 'app-user-show',
@@ -35,6 +36,8 @@ export class UserShowComponent {
   listarray:any[]=[];
 
   fnamePattern:string="^[a-zA-Z]{1,20}$";
+  emailPattern:string="^([awa-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$";
+  phonePattern: string = "^((\\+91-?)|0)?[0-9]{10}$";
   states: string[] = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
     'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
@@ -53,7 +56,7 @@ export class UserShowComponent {
   announcer = inject(LiveAnnouncer);
 
   inputObj={
-    profilePic:"",
+    profilePic:"./assets/images/pic.jpg",
     fname:"",
     lname:"",
     email:"",
@@ -117,36 +120,45 @@ export class UserShowComponent {
   }
   
   
+  
   url="./assets/images/pic.jpg"
-  onselectFile(e:any)
+  onselectFile(e:any ,profilePic: NgModel)
   {
     const file = e.target.files[0];
-  
-  if (file) {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-    // Set up event listener for when file reading is done
-    fileReader.onload = (event:any) => {
-      // Once reading is complete, convert the image to base64
-      const base64Image = fileReader.result as string;
-
-      // Update the profilePic property in inputObj with the base64 encoded image
-      this.inputObj.profilePic = base64Image;
-      this.url=event.target.result;
-
-      // Now, you can subscribe to the addItem service
-     // this.subscribeToAddItem();
-    };
-
-    // Start reading the file as a data URL
-    fileReader.readAsDataURL(file);
-  } else {
-    // Handle the case where no file is selected
-    console.error('No file selected.');
-  }
-    
-    
-  }
+    const img = new Image();
+      img.onload = () => {
+          if (img.width !== 310 || img.height !== 325) {
+              // Set invalid size error
+              profilePic.control.setErrors({ 'invalidSize': true });
+              // Clear the file input field
+              e.target.value = '';
+              // Clear the preview image
+              //this.url="#";
+          } else {
+            
+            if (file) {
+              profilePic.control.setErrors(null);
+              const fileReader = new FileReader();
+              fileReader.readAsDataURL(file);
+              // Set up event listener for when file reading is done
+              fileReader.onload = (event:any) => {
+                // Once reading is complete, convert the image to base64
+                const base64Image = fileReader.result as string;
+      
+                // Update the profilePic property in inputObj with the base64 encoded image
+                this.inputObj.profilePic = base64Image;
+                this.url=event.target.result;
+              };
+      
+              
+            } else {
+              // Handle the case where no file is selected
+              console.error('No file selected.');
+            }
+          }
+        };
+        img.src = window.URL.createObjectURL(file);
+      }
 
 
   onSliderChange(event: Event): void {
@@ -157,25 +169,34 @@ export class UserShowComponent {
   editData(item:any){
     this.inputObj=item;
     this.interests=item.interest;
-    
+   
   }
-  updateDataByEmail(email: string, updatedData: any): void {
-    this.dataservice.updateDataByEmail(email, updatedData)
-      .subscribe(response => {
-        console.log('Data updated successfully', response);
-        // Handle the response as needed
-      }, error => {
-        console.error('Error updating data', error);
-        // Handle the error
-      });
-  }
+  
   onHome()
   {
     this.router.navigateByUrl('/home');
   }
 
-  updateForm()
+  updateForm(userEmail:any,data:any)
   {
+    //userEmail = 'hemant@gmail.com'; // Replace with the email you want to search
+    this.dataservice.getUserIdByEmail(userEmail).subscribe(
+      (userId) => {
+        if (userId !== null) {
+          //console.log(`User ID for ${userEmail}: ${userId}`);
+          //alert(`User ID for ${userEmail}: ${userId}`);
+          this.dataservice.updateUser(userId,data).subscribe(response =>{
+            alert("Data Updated Successfully!");
+          })
+        } else {
+          //console.log(`User with email ${userEmail} not found`);
+          alert(`User with email ${userEmail} not found`);
+        }
+      },
+      (error) => {
+        alert("error");
+      }
+    );
     
   }
 }

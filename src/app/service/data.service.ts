@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -46,8 +46,16 @@ export class DataService {
     this.listarray.push(input);
   }
   
-  updateDataByEmail(email: string, updatedData: any): Observable<any> {
-    const url = `${this.apiUrl}/${email}`; // Replace 'yourResource' with your actual resource name
-    return this.http.post(`${url}?email=${email}`, updatedData);
+  updateUser(id:any,data:any): Observable<any>
+  {
+    return this.http.put<any>(`http://localhost:3000/userDetails/${id}`, data);
+  }
+  getUserIdByEmail(email: string): Observable<number | null> {
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map((users) => {
+        const user = users.find((u) => u.email === email);
+        return user ? user.id : null;
+      })
+    );
   }
 }
