@@ -65,6 +65,7 @@ export class LandingComponent {
     age:20,
     contact: "",
     state:"",
+    country:"",
     addressType:"",
     address : {
       address1: '',

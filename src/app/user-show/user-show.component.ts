@@ -63,6 +63,7 @@ export class UserShowComponent {
     age:20,
     contact: "",
     state:"",
+    country:"",
     addressType:"",
     address : {
       address1: '',
