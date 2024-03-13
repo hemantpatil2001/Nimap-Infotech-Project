@@ -40,13 +40,25 @@ export class LandingComponent {
   fnamePattern:string="^[a-zA-Z]{1,20}$";
   emailPattern:string="^([awa-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$";
   phonePattern: string = "^((\\+91-?)|0)?[0-9]{10}$";
-  states: string[] = [
-    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
+  
+  countries = ['India', 'USA']; // Add more countries as needed
+
+  statesMap: { [key: string]: string[] } = {
+    'India': ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana',
     'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur',
     'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana',
     'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Andaman and Nicobar Islands', 'Chandigarh',
-    'Dadra and Nagar Haveli and Daman and Diu', 'Lakshadweep', 'Delhi', 'Puducherry'
-  ];
+    'Dadra and Nagar Haveli and Daman and Diu', 'Lakshadweep', 'Delhi', 'Puducherry'], // Add more states for India as needed
+    
+    'USA': ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+    'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+    'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
+    'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico',
+    'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
+    'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'] // Add more states for USA as needed
+    // Add states for other countries
+  };
   separatorKeysCodes: number[] = [ENTER, COMMA];
   interestCtrl = new FormControl('');
   filteredinterest: Observable<string[]>;
@@ -76,11 +88,20 @@ export class LandingComponent {
     interest : this.interests
     
   };
+  
   constructor(private dataService: DataService,private router: Router) {
     this.filteredinterest = this.interestCtrl.valueChanges.pipe(
       startWith(null),
       map((fruit: string | null) => (fruit ? this._filter(fruit) : this.allinterest.slice())),
     );
+  }
+  getStates(): string[] {
+    return this.statesMap[this.inputObj.country] || [];
+  }
+  
+  updateStates(): void {
+    // Reset the state when the country changes
+    this.inputObj.state = '';
   }
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
