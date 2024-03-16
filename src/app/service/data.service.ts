@@ -7,19 +7,30 @@ import { Observable, catchError, map, switchMap } from 'rxjs';
 })
 export class DataService {
   
-  listarray:any[]=[];
-  // listarray=[{"imgurl":"",
-  // "name":"Hemant",
-  // "email":"hemant@gmail.com",
-  // age:50,
-  // "contact": "123",
-  // "address" : "pune",
-  // "interest" : "crickeet"}];
-
-  // headers=new HttpHeaders().set('Content-Type','application/json').set('Accept', 'application/json');
-  // httpOptions={
-  //   headers:this.headers
-  // }
+  // inputObj:any={
+  //   profilePic:"./assets/images/pic.jpg",
+  //   fname:"Hemant",
+  //   lname:"Patil",
+  //   email:"hemantpatil3477@gmail.com",
+  //   age:20,
+  //   contact: "1234567890",
+  //   state:"Maharashtra",
+  //   country:"India",
+  //   addressType:"Home",
+  //   address : {
+  //     address1: 'Shivajinagar',
+  //     address2: 'Pune',
+  //     companyAddress1: '',
+  //     companyAddress2: ''
+  //   },
+  //   interest :[
+  //     "Cricket",
+  //     "Hockey"
+  //   ]
+    
+  // };
+  
+  inputObj:any={};
 
   private apiUrl = 'http://localhost:3000/userDetails';
 
@@ -39,11 +50,11 @@ export class DataService {
   }
   getData()
   {
-    return this.listarray;
+    return this.inputObj;
   }
   saveData(input:any)
   {
-    this.listarray.push(input);
+    this.inputObj=input;
   }
   
   updateUser(id:any,data:any): Observable<any>
