@@ -5,7 +5,7 @@
       "fname": "Hemant",
       "lname": "Patil",
       "email": "hemant@gmail.com",
-      "age": 22,
+      "age": 18,
       "contact": "8308375280",
       "state": "Maharashtra",
       "country": "India",
@@ -13,14 +13,14 @@
       "address": {
         "address1": "Shivajinagar",
         "address2": "Pune",
-        "companyAddress1": "Nimap Infotech",
-        "companyAddress2": "Mumbai"
+        "companyAddress1": "",
+        "companyAddress2": ""
       },
       "interest": [
         "Cricket",
         "Chess"
       ],
-      "id": "cd19"
+      "id": "3b6a"
     }
   ]
 }

@@ -111,12 +111,12 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Registration </h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: rgb(0, 174, 255);">Registration </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         
         <div class="modal-body">
-            <form id="editForm" >
+            <form id="regForm" #regForm="ngForm" >
                 <div class="form-group">
                     <label for="editName">Profile Photo </label>&nbsp;&nbsp;&nbsp;
                     <img id="previewImage" [src]="url" height="100"><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -174,21 +174,21 @@
                
               <div class="form-group">
                 <label for="country">Country:</label>
-                <select [(ngModel)]="inputObj.country" name="country" class="form-control" id="country" (change)="updateStates()">
+                <select [(ngModel)]="inputObj.country" name="country" class="form-control" id="country" (change)="updateStates()" required>
                   <option value="" disabled selected>Select Country</option>
                   <option *ngFor="let country of countries" [value]="country">{{ country }}</option>
                 </select>
               </div>
               <div class="form-group">
                 <label for="state">State:</label>
-                <select [(ngModel)]="inputObj.state" name="state" class="form-control" id="state">
+                <select [(ngModel)]="inputObj.state" name="state" class="form-control" id="state" required>
                   <option value="" disabled selected>Select State</option>
                   <option *ngFor="let state of getStates()" [value]="state">{{ state }}</option>
                 </select>
               </div>
                 <div class="form-group">
                     <label for="addressType">Address Type:</label>
-                    <select [(ngModel)]="inputObj.addressType" name="addressType" class="form-control">
+                    <select [(ngModel)]="inputObj.addressType" name="addressType" class="form-control" required>
                         <option value="">Select Address Type</option>
                         <option value="home">Home</option>
                         <option value="company">Company</option>
@@ -239,12 +239,14 @@
                         </mat-form-field>
                     
                 <!-- Add more fields as needed -->
-            </form>
-        </div>
+            
+        
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary" (click)="submitForm()" data-bs-dismiss="modal">Register</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary" (click)="submitForm()" [disabled]="regForm.invalid" data-bs-dismiss="modal">Register</button>
         </div>
+      </form>
+    </div>
       </div>
     </div>
   </div>
@@ -253,11 +255,11 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">LOGIN </h1>
+          <h1 class="modal-title fs-5" id="exampleModalLabel" style="color: rgb(0, 174, 255);">LOGIN </h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form id="editForm" >
+            <form id="loginForm" >
                 
                 <div class="form-group">
                     <label for="editEmail">Email:</label>
@@ -273,7 +275,7 @@
             </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-primary" (click)="onLogin()" data-bs-dismiss="modal">Go</button>
         </div>
       </div>
